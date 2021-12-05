@@ -12,11 +12,25 @@ using namespace std;
 struct Point {
 	int x;
 	int y;
+
+	void step(Point d) {
+		x += d.x;
+		y += d.y;
+	}
+
+	bool operator==(Point other) const {
+		return x == other.x && y == other.y;
+	}
 };
 
 struct Line {
 	Point start;
 	Point end;
+
+	Point slope() const {
+		return { (start.x < end.x) - (end.x < start.x),
+			 (start.y < end.y) - (end.y < start.y) };
+	}
 };
 
 struct Map {
@@ -60,18 +74,13 @@ ostream &operator<<(ostream &out, const Map &m) {
 }
 
 void mark(const Line &line, Map &map) {
-	int x = line.start.x;
-	int y = line.start.y;
-
-	int xstride = (line.start.x < line.end.x) - (line.end.x < line.start.x);
-	int ystride = (line.start.y < line.end.y) - (line.end.y < line.start.y);
-
+	Point p { line.start };
+	Point d { line.slope() };
 	for (;;) {
-		++map.loc[x][y];
-		if (x == line.end.x && y == line.end.y)
+		++map.loc[p.x][p.y];
+		if (p == line.end)
 			break;
-		x += xstride;
-		y += ystride;
+		p.step(d);
 	}
 }
 
