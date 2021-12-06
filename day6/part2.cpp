@@ -15,8 +15,6 @@ void step(unsigned long long lanternfish[9]) {
 		lanternfish[i] = lanternfish[i + 1];
 	lanternfish[8] = spawning;
 	lanternfish[6] += spawning;
-	copy(lanternfish, lanternfish + 9, ostream_iterator<unsigned long long>(cout, " "));
-	cout << endl;
 }
 
 int main() {
