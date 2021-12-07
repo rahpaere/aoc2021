@@ -9,28 +9,18 @@
 
 using namespace std;
 
-int cost(vector<int> &positions, int target) {
-	int total = 0;
-	for (int i: positions)
-		total += abs(target - i);
-	return total;
-}
-
 int main() {
 	vector<int> positions;
 	copy(istream_iterator<int>(cin), {}, back_inserter(positions));
 
-	int limit = *max_element(positions.begin(), positions.end());
-	int best = -1;
-	int bestcost = numeric_limits<int>::max();
-	for (int i = 0; i < limit; ++i) {
-		int costhere = cost(positions, i);
-		if (costhere < bestcost) {
-			best = i;
-			bestcost = costhere;
-		}
-	}
+	auto m = positions.begin() + positions.size() / 2;
+	nth_element(positions.begin(), m, positions.end());
+	int target = *m;
 
-	cout << bestcost << endl;
+	vector<int> costs(positions.size());
+	transform(positions.begin(), positions.end(), back_inserter(costs),
+		  [target](auto x) { return abs(x - target); });
+
+	cout << accumulate(costs.begin(), costs.end(), 0) << endl;
 	return EXIT_SUCCESS;
 }
