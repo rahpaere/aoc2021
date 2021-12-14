@@ -57,6 +57,7 @@ void Polymer::insert(const Rules &rules) {
 	while (it != pairs.end()) {
 		auto rule = rules.find(it->first);
 		if (rule == rules.end()) {
+			insertions.insert(*it);
 			++it;
 			continue;
 		}
@@ -66,8 +67,7 @@ void Polymer::insert(const Rules &rules) {
 		it = pairs.erase(it);
 	}
 
-	for (const auto &[key, count]: insertions)
-		pairs[key] += count;
+	pairs = move(insertions);
 }
 
 void Polymer::insert(const Rules &rules, unsigned iterations) {
