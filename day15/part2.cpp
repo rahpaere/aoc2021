@@ -37,7 +37,6 @@ private:
 	Step make_step(const Step &, const Coord &) const;
 	vector<Step> neighbors(const Step &) const;
 	unsigned get_risk(const Coord &) const;
-	unsigned heuristic(const Step &) const;
 
 	Grid risk;
 	map<Coord, unsigned> cost;
@@ -98,13 +97,6 @@ unsigned Cavern::get_risk(const Coord &pos) const {
 	return (risk[i][j] - 1 + delta) % 9 + 1;
 }
 
-unsigned Cavern::heuristic(const Step &s) const {
-	return max(s.pos.first, exit.first)
-		- min(s.pos.first, exit.first)
-		+ max(s.pos.second, exit.second)
-		- min(s.pos.second, exit.second);
-}
-
 void Cavern::explore() {
 	cost.clear();
 	cost[start] = 0;
@@ -122,7 +114,6 @@ void Cavern::explore() {
 			auto it = cost.find(t.pos);
 			if (it == cost.end() || t.cost < it->second) {
 				cost[t.pos] = t.cost;
-				t.cost += heuristic(t);
 				pq.push(t);
 			}
 		}

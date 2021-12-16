@@ -31,7 +31,6 @@ public:
 private:
 	Step make_step(const Step &, Grid::size_type, Grid::size_type) const;
 	vector<Step> neighbors(const Step &s) const;
-	unsigned heuristic(const Step &s) const;
 
 	Grid risk;
 	Grid cost;
@@ -78,11 +77,6 @@ vector<Step> Cavern::neighbors(const Step &s) const {
 	return v;
 }
 
-unsigned Cavern::heuristic(const Step &s) const {
-	return max(s.row, exit_row) - min(s.row, exit_row)
-		+ max(s.col, exit_col) - min(s.col, exit_col);
-}
-
 void Cavern::explore() {
 	priority_queue<Step, vector<Step>, greater<Step>> pq;
 
@@ -98,7 +92,6 @@ void Cavern::explore() {
 		for (auto &t: neighbors(s)) {
 			if (t.cost < cost[t.row][t.col]) {
 				cost[t.row][t.col] = t.cost;
-				t.cost += heuristic(t);
 				pq.push(t);
 			}
 		}
