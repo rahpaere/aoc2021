@@ -7,11 +7,13 @@
 #include <limits>
 #include <list>
 #include <map>
+#include <memory>
 #include <numeric>
 #include <queue>
 #include <set>
 #include <sstream>
 #include <stack>
+#include <variant>
 #include <vector>
 
 using namespace std;
