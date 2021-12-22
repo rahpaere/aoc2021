@@ -23,14 +23,10 @@ const int points = 21;
 
 class Superposition {
 public:
-	friend ostream &operator<<(ostream &, const Superposition &);
-
 	Superposition(int start);
 
-	Superposition &operator*=(uint64_t n);
-
 	void step(Superposition &other);
-	uint64_t getWins() const;
+	uint64_t games() const;
 	bool playing() const;
 
 private:
@@ -41,26 +37,6 @@ private:
 	uint64_t size {};
 };
 
-ostream &operator<<(ostream &out, const Superposition &player) {
-	out << "       ";
-	for (int s = 1; s <= spaces; ++s)
-		out << setw(6) << s;
-	out << endl;
-	out << "     +-";
-	for (int s = 1; s <= spaces; ++s)
-		out << "------";
-	out << endl;
-	for (int p = points - 1; p >= 0; --p) {
-		out << setw(4) << p << " | ";
-		for (int s = 0; s < spaces; ++s)
-			out << setw(6) << player.states[p][s];
-		out << endl;
-	}
-	out << player.size << " positions still in play" << endl;
-	out << player.wins << " wins so far" << endl;
-	return out;
-}
-
 constexpr int came_from(int space, int roll) {
 	return (space + spaces - roll) % 10;
 }
@@ -68,14 +44,6 @@ constexpr int came_from(int space, int roll) {
 Superposition::Superposition(int start) {
 	++states[0][start - 1];
 	++size;
-}
-
-Superposition &Superposition::operator*=(uint64_t n) {
-	for (int p = 0; p < points; ++p)
-		for (int s = 0; s < spaces; ++s)
-			states[p][s] *= n;
-	size *= n;
-	return *this;
 }
 
 uint64_t Superposition::arriving(int p, int s) const {
@@ -110,7 +78,7 @@ void Superposition::step(Superposition &other) {
 			size += states[p][s] = arriving(p, s);
 }
 
-uint64_t Superposition::getWins() const {
+uint64_t Superposition::games() const {
 	return wins;
 }
 
@@ -121,10 +89,10 @@ bool Superposition::playing() const {
 int main() {
 	Superposition p1(10);
 	Superposition p2(8);
-	while (p1.playing() || p2.playing()) {
+	while (p1.playing() && p2.playing()) {
 		p1.step(p2);
 		p2.step(p1);
 	}
-	cout << max(p1.getWins(), p2.getWins()) << endl;
+	cout << max(p1.games(), p2.games()) << endl;
 	return EXIT_SUCCESS;
 }
